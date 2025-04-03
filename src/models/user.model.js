@@ -1,6 +1,7 @@
 import mongoose, {Schema} from "mongoose";
+import bcrypt from "bcrypt";
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
        name:{
               type: String,
               required: true
@@ -20,7 +21,7 @@ const userSchema = new mongoose.Schema({
               required: true,
               validate:{
                      validator:function(v){
-                            return /\d{10}/test(v);
+                            return /\d{10}/.test(v);
                      },
                      message:"Phone number must be in ten digit!!"
               }
@@ -34,5 +35,14 @@ const userSchema = new mongoose.Schema({
               required: true
        }
 },{timestamps: true}); 
+
+userSchema.pre('save', async function(next){
+       if(!this.isModified('password')){
+              next();
+       }
+
+       const salt = await bcrypt.genSalt(10);
+       this.password = await bcrypt.hash(this.password, salt);
+})
 
 export const User = mongoose.model("User", userSchema);

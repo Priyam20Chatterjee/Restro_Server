@@ -1,4 +1,8 @@
-require("dotenv").config();
+import dotenv from "dotenv";
+
+dotenv.config({
+       path: "./.env"
+});
 
 const config=Object.freeze({
        port: process.env.PORT || 8000,
@@ -6,4 +10,4 @@ const config=Object.freeze({
        nodeEnv: process.env.NODE_ENV || "development"
 })
 
-module.exports=config;
+export default config;
